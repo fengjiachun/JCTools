@@ -28,6 +28,15 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  * <li>To construct flavors of {@link AtomicReferenceArray}.
  * <li>Other use cases exist but are not present in this library yet.
  * </ol>
+ *
+ * 使用unsafe来提供对 volatile/ordered/plain 的读或写
+ *
+ * 值得注意的是不要被sun.misc.Unsafe.java或unsafe.cpp中的源码迷惑, 那都是在JIT之前的实现, JIT之后会被替换成针对平台优化的版本.
+ *
+ * 比如volatile/ordered的写操作在unsafe.cpp中代码相同的, 但putOrderedXXX系列方法在[hotspot/src/share/vm/classfile/vmSymbols.hpp]的宏定义中,
+ * JIT会根据对应method的 intrinsic id 生成特定的针对平台优化指令集, 优化后的实现在[hotspot/src/share/vm/opto/library_call.cpp]中,
+ * 对ordered的写操作在JIT之前是同写volatile一样, 插入了StoreLoad和StoreStore屏障(x86下StoreLoad是一条lock addl 指令, StoreStore不需要),
+ * 但是JIT之后就只有StoreStore了.
  * 
  * @author nitsanw
  * 
