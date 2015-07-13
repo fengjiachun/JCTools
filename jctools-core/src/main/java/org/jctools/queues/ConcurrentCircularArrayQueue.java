@@ -42,7 +42,6 @@ abstract class ConcurrentCircularArrayQueueL0Pad<E> extends AbstractQueue<E> imp
  * Load/Store methods using a <i>buffer</i> parameter are provided to allow the prevention of final field reload after a
  * LoadLoad barrier.
  * <p>
- * 这个类来自jctools, 我按照自己的理解做了一些轻微改动
  *
  * 这个Queue的数据结构是一个环形数组, 大概是下图这样:
  *
