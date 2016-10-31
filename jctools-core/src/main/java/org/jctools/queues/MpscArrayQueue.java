@@ -215,7 +215,8 @@ public class MpscArrayQueue<E> extends MpscArrayQueueConsumerField<E> implements
         /*
          * ordered写, JIT以后没有StoreLoad, 只剩StoreStore(x86下是空操作)
          * 这样虽然提高了写的性能, 但不能保证可见性, 为什么要这么做呢? 会不会导致poll中的循环跳不出去呢?
-         * 我自欺欺人的给出下面两条我认为可能合理的解释:
+         *
+         * 下面是我猜的:
          * 1.等到当前producer线程再一次offer并调用casProducerIndex后就插入一个StoreLoad(lock cmpxchg), 之前写入的element就对consumer可见了
          * 2.在JIT之前, ordered写与volatile写具有相同语义的, 不存在可见性问题, 在JIT之后呢? 此时buffer很大可能已经晋升到老年代了,
          *   而新生代了element被老年代的buffer引用, 在hotspot要维护一个cardTable来解决新生代GC问题, 每次element被赋值到buffer中都会导致
